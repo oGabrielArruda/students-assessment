@@ -16,7 +16,7 @@ module.exports = app => {
 
   app.post("/avaliar", async (req, res, next) => {
     let infos = req.body;
-    const msgDeErro = getMsgDeErro(infos);
+    const msgDeErro = await getMsgDeErro(infos);
     if (msgDeErro) res.status(404).send({ error: msgDeErro });
 
     let queries = `delete from Matriculas where ra = ${infos.ra} and cod = ${infos.cod};
@@ -51,7 +51,7 @@ async function getMsgDeErro(req) {
         .request()
         .query(verificacoes[i].query);
       if (!resposta.recordset[0]) return verificacoes[i].msgErro;
-    } catch (ex) {
+    } catch (ex) {      
       console.log(ex);
     }
   }
