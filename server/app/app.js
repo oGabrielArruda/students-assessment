@@ -10,7 +10,11 @@ module.exports = app => {
       .catch(erro => resposta.json(erro)); // exibe o erro
   }
 
-  app.get("/", async (req, res) => {
+  app.get("/alunos/:ra", (req, res) => {
+    execSQL(`select * from Alunos where ra = ${req.params.ra}`, res);
+  });
+
+  app.get("/resultados", async (req, res) => {
     execSQL("select * from Resultados", res);
   });
 
