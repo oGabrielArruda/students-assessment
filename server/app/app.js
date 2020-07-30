@@ -11,7 +11,11 @@ module.exports = app => {
   }
 
   app.get("/alunos/:ra", (req, res) => {
-    execSQL(`select * from Alunos where ra = ${req.params.ra}`, res);
+    global.conexao
+    .request()
+    .query(`select * from Alunos where ra = ${req.params.ra}`)
+    .then(resultado => res.json(resultado.recordset[0]))
+    .catch(err => res.json(err));
   });
 
   app.get("/resultados", async (req, res) => {
@@ -30,6 +34,8 @@ module.exports = app => {
       .request()
       .query(queries)
       .catch(err => res.json(err));
+
+      res.send("Sucesso!");
   });
 };
 

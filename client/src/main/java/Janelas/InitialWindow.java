@@ -1,26 +1,38 @@
 package Janelas;
 
+import Aluno.Aluno;
+import WebService.ClienteWS;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class InitialWindow {
     private JTextField RATextField;
-    private JTextField nomeDoAlunoTextField;
-    private JTextField códigoDaDisciplinaTextField;
+    private JTextField CodigoDaDisciplinaTextField;
     private JTextField notaTextField;
     private JTextField frequênicaTextField;
+    private JTextField nomeDoAlunoTextField;
     private JButton adicionarButton;
     private JButton salvarButton;
     public JPanel panelMain;
 
     public InitialWindow()
     {
-
-        adicionarButton.addActionListener(new ActionListener() {
+        RATextField.addFocusListener(new FocusListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void focusGained(FocusEvent e) {
 
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                try {
+                    Aluno aluno = (Aluno) ClienteWS.getObjeto(Aluno.class, "http://localhost:3000/alunos", RATextField.getText());
+                    nomeDoAlunoTextField.setText(aluno.getNome());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
