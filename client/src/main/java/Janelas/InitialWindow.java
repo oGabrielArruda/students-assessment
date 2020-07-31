@@ -1,11 +1,11 @@
 package Janelas;
 
 import Aluno.Aluno;
+import Resultado.Resultado;
 import WebService.ClienteWS;
 
 import javax.swing.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 
 public class InitialWindow {
     private JTextField RATextField;
@@ -19,6 +19,8 @@ public class InitialWindow {
 
     public InitialWindow()
     {
+       Fila<Resultado> filaResultado = new Fila<Resultado>();
+
         RATextField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -35,5 +37,38 @@ public class InitialWindow {
                 }
             }
         });
+        adicionarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try{
+                    short ra = Short.parseShort(RATextField.getText());
+                    int codigo = Integer.parseInt(CodigoDaDisciplinaTextField.getText());
+                    double nota = Double.parseDouble(notaTextField.getText());
+                    double frequencia = Double.parseDouble(frequenciaTextField.getText());
+
+                    RATextField.setText("");
+                    nomeDoAlunoTextField.set
+
+                    Resultado novoResultado = new Resultado(ra, codigo, nota, frequencia);
+                    filaResultado.guardeUmItem(novoResultado);
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+
+
+        });
+        salvarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try{
+                    while(!filaResultado.isVazia()){
+                        Resultado resultado = (Resultado) ClienteWS.postObjeto(filaResultado.recupereUmItem(), Resultado.class, "http://localhost:3000/avaliar");
+                        filaResultado.removaUmItem();
+                    }
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
-}
