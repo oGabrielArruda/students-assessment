@@ -3,23 +3,23 @@ package Janelas;
 import Aluno.Aluno;
 import Resultado.Resultado;
 import WebService.ClienteWS;
-
+import Fila.Fila;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.concurrent.ExecutionException;
 
 public class InitialWindow {
     private JTextField RATextField;
     private JTextField CodigoDaDisciplinaTextField;
     private JTextField notaTextField;
-    private JTextField frequênicaTextField;
+    private JTextField frequenciaTextField;
     private JTextField nomeDoAlunoTextField;
     private JButton adicionarButton;
     private JButton salvarButton;
     public JPanel panelMain;
 
-    public InitialWindow()
-    {
-       Fila<Resultado> filaResultado = new Fila<Resultado>();
+    public InitialWindow() {
+        Fila<Resultado> filaResultado = new Fila<Resultado>();
 
         RATextField.addFocusListener(new FocusListener() {
             @Override
@@ -34,24 +34,22 @@ public class InitialWindow {
                     nomeDoAlunoTextField.setText(aluno.getNome());
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    nomeDoAlunoTextField.setText("");
                 }
             }
         });
         adicionarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                try{
+                try {
                     short ra = Short.parseShort(RATextField.getText());
                     int codigo = Integer.parseInt(CodigoDaDisciplinaTextField.getText());
                     double nota = Double.parseDouble(notaTextField.getText());
                     double frequencia = Double.parseDouble(frequenciaTextField.getText());
-
-                    RATextField.setText("");
-                    nomeDoAlunoTextField.set
-
+                    limparCampos();
                     Resultado novoResultado = new Resultado(ra, codigo, nota, frequencia);
                     filaResultado.guardeUmItem(novoResultado);
-                }catch(Exception ex){
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -61,14 +59,23 @@ public class InitialWindow {
         salvarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                try{
-                    while(!filaResultado.isVazia()){
+                while (!filaResultado.isVazia()) {
+                    try {
                         Resultado resultado = (Resultado) ClienteWS.postObjeto(filaResultado.recupereUmItem(), Resultado.class, "http://localhost:3000/avaliar");
                         filaResultado.removaUmItem();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                }catch(Exception ex){
-                    ex.printStackTrace();
                 }
             }
         });
     }
+
+    private void limparCampos() {
+        this.RATextField.setText("");
+        this.frequenciaTextField.setText("");
+        this.CodigoDaDisciplinaTextField.setText("");
+        this.nomeDoAlunoTextField.setText("");
+        this.notaTextField.setText("");
+    }
+}

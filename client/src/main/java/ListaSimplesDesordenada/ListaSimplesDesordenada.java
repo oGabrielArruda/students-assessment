@@ -119,6 +119,39 @@ public class ListaSimplesDesordenada<X> {
         this.ultimo = atual;
     }
 
+    public boolean isVazia()
+    {
+        return this.primeiro == null;
+    }
+
+    public X getDoInicio() throws Exception
+    {
+        if(this.primeiro == null)
+            throw new Exception("Lista vazia!");
+        X ret = tryGetClone(this.primeiro.getInfo());
+        return ret;
+    }
+
+    public X getDoFim() throws Exception
+    {
+        if(this.primeiro == null)
+            throw new Exception("Lista vazia");
+        X ret = tryGetClone(this.ultimo.getInfo());
+        return ret;
+    }
+
+    public int getQtd()
+    {
+        int qtd = 0;
+        No atual = this.primeiro;
+        while(atual != null)
+        {
+            qtd++;
+            atual = atual.getProx();
+        }
+        return qtd;
+    }
+
     public int hashCode()
     {
         int ret = 345;

@@ -16,7 +16,7 @@ public class Resultado {
     }
 
     public void setRA(short ra) throws Exception{
-        if(ra+"".length() != 5)
+        if(ra > 99999 || ra < 10000)
             throw new Exception("Ra inválido");
         this.RA = ra;
     }
