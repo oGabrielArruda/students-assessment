@@ -36,6 +36,10 @@ public class Fila <X>
         this.elementos.removaDoInicio();
     }
 
+    public int qtd() {
+        return this.elementos.getQtd();
+    }
+
     public boolean isVazia ()
     {
         return this.elementos.isVazia();

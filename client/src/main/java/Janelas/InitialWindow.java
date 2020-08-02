@@ -17,9 +17,11 @@ public class InitialWindow {
     private JButton adicionarButton;
     private JButton salvarButton;
     public JPanel panelMain;
+    private JList list1;
+    Fila<Resultado> filaResultado = new Fila<Resultado>();
 
     public InitialWindow() {
-        Fila<Resultado> filaResultado = new Fila<Resultado>();
+
 
         RATextField.addFocusListener(new FocusListener() {
             @Override
@@ -46,10 +48,11 @@ public class InitialWindow {
                     int codigo = getCod(CodigoDaDisciplinaTextField.getText());
                     double nota = getNota(notaTextField.getText());
                     double frequencia = getFreq(frequenciaTextField.getText());
-                    limparCampos();
                     Resultado novoResultado = new Resultado(ra, codigo, nota, frequencia);
                     filaResultado.guardeUmItem(novoResultado);
+                    limparCampos();
                 } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
                     ex.printStackTrace();
                 }
             }
@@ -59,16 +62,49 @@ public class InitialWindow {
         salvarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                while (!filaResultado.isVazia()) {
-                    try {
-                        Resultado resultado = (Resultado) ClienteWS.postObjeto(filaResultado.recupereUmItem(), Resultado.class, "http://localhost:3000/avaliar");
-                        filaResultado.removaUmItem();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
+                sendToApi();
+                limparFila();
             }
         });
+    }
+
+    private void sendToApi() {
+        String[] vetorMensagens = new String[this.filaResultado.qtd()];
+        int indice = 0;
+
+        while (!this.filaResultado.isVazia()) {
+            Resultado resultadoParaEnvio = pegarResultado();
+            try {
+                Resultado resultadoRecebido = (Resultado) ClienteWS.postObjeto(resultadoParaEnvio, Resultado.class, "http://localhost:3000/avaliar");
+                vetorMensagens[indice] = "Sucesso ao avaliar o aluno do RA " + resultadoRecebido.getRA() + ", na disciplina " + resultadoRecebido.getCod();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                vetorMensagens[indice] = "Erro ao avaliar o aluno do RA "+ resultadoParaEnvio.getRA() + ": " + ex.getMessage();
+            } finally {
+                removerResultado();
+                indice++;
+            }
+        }
+
+        list1.setListData(vetorMensagens);
+    }
+
+    private Resultado pegarResultado() {
+        Resultado ret = null;
+        try {
+            ret = this.filaResultado.recupereUmItem();
+        } catch (Exception ex) {}
+        return ret;
+    }
+
+    private void removerResultado() {
+        try {
+            this.filaResultado.removaUmItem();
+        } catch (Exception ex) {}
+    }
+
+    private void limparFila() {
+        this.filaResultado = new Fila<Resultado>();
     }
 
     private void limparCampos() {
@@ -117,13 +153,13 @@ public class InitialWindow {
 
     private double getFreq(String freqStr) throws Exception {
         try {
-            double ret = Integer.parseInt(freqStr);
+            double ret = Double.parseDouble(freqStr);
             return ret;
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Frequencia inválida");
             frequenciaTextField.setText("");
             frequenciaTextField.grabFocus();
-            throw new Exception("Erro ao converter COD de Disciplina");
+            throw new Exception("Erro ao converter Frequencia");
         }
     }
 }
