@@ -26,16 +26,15 @@ module.exports = app => {
     let infos = req.body;
     const msgDeErro = await getMsgDeErro(infos);
     if (msgDeErro) res.status(404).send({ error: msgDeErro });
-
     let queries = `delete from Matriculas where ra = ${infos.ra} and cod = ${infos.cod};
-        insert into Resultados values (${infos.ra}, ${infos.cod}, ${infos.nota}, ${infos.freq})`;
+        insert into Resultados values (${infos.ra}, ${infos.cod}, ${infos.nota}, ${infos.frequencia})`;
 
     await global.conexao
       .request()
       .query(queries)
       .catch(err => res.json(err));
 
-      res.send("Sucesso!");
+      res.json(req.body);
   });
 };
 
@@ -54,7 +53,7 @@ async function getMsgDeErro(req) {
       msgErro: "Aluno não matriculado na disciplina!"
     }
   ];
-
+   
   for (let i = 0; i < verificacoes.length; i++) {
     try {
       let resposta = await global.conexao
@@ -65,7 +64,7 @@ async function getMsgDeErro(req) {
       console.log(ex);
     }
   }
-
+  
   if (req.nota < 0 || req.nota > 10) return "Nota inválida!";
   if (req.freq < 0 || req.freq > 1) return "Frequência inválida!";
 
