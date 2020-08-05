@@ -1,4 +1,4 @@
-package WebService;
+package MensagemResultado;
 
 public class MensagemResultado {
     private String mensagem;

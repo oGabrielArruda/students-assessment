@@ -4,11 +4,10 @@ import Aluno.Aluno;
 import Resultado.Resultado;
 import WebService.ClienteWS;
 import Fila.Fila;
-import WebService.MensagemResultado;
+import MensagemResultado.MensagemResultado;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.concurrent.ExecutionException;
 
 public class InitialWindow {
     private JTextField RATextField;
