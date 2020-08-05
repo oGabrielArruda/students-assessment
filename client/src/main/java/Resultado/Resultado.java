@@ -43,4 +43,56 @@ public class Resultado {
     public int getCod(){return this.Cod;}
     public double getNota(){return this.Nota;}
     public double getFrequencia(){return this.Frequencia;}
+
+    public String toString ()
+    {
+        String ret="[";
+
+        ret += RA + "," + Cod + "," + Nota + "," + Frequencia;
+
+        return ret+"]";
+    }
+
+    public boolean equals (Object obj)
+    {
+        if (this==obj)
+            return true;
+
+        if (obj==null)
+            return false;
+
+        if (this.getClass()!=obj.getClass())
+            return false;
+
+        Resultado res = (Resultado)obj;
+
+       if(this.RA != res.RA)
+           return false;
+       if(this.Cod != res.Cod)
+           return false;
+       if(this.Nota != res.Nota)
+           return false;
+
+       if (this.Frequencia != res.Frequencia)
+           return false;
+
+        return true;
+    }
+
+    public int hashCode ()
+    {
+        final int PRIMO = 13; // qualquer número primo serve
+
+        int ret=666; // qualquer inteiro positivo serve
+
+        ret = 17*ret + new Short(this.RA).hashCode();
+        ret = 17*ret + new Integer(this.Cod).hashCode();
+        ret = 17*ret + new Double(this.Nota).hashCode();
+        ret = 17*ret + new Double(this.Frequencia).hashCode();
+
+        if (ret<0) ret = -ret;
+
+        return ret;
+    }
+
 }

@@ -83,7 +83,6 @@ public class InitialWindow {
                     vetorMensagens[indice] = "Erro ao avaliar o aluno do RA "+ resultadoParaEnvio.getRA() + ": " + resultadoRecebido.getMensagem();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                vetorMensagens[indice] = "Erro ao avaliar o aluno do RA "+ resultadoParaEnvio.getRA() + ": " + ex;
             } finally {
                 removerResultado();
                 indice++;
