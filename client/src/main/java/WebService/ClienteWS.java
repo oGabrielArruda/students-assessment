@@ -33,7 +33,7 @@ public class ClienteWS
         return objRetorno;
     }
 
-    public static Object postObjeto(Object objEnvio, Class tipoClasse, String urlWebService)
+    public static Object postObjeto(Object objEnvio, Class tipoClasse, String urlWebService) throws Exception
     {
         Object objetoRetorno = null;
         try {

@@ -4,6 +4,8 @@ import Aluno.Aluno;
 import Resultado.Resultado;
 import WebService.ClienteWS;
 import Fila.Fila;
+import WebService.MensagemResultado;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.concurrent.ExecutionException;
@@ -75,11 +77,14 @@ public class InitialWindow {
         while (!this.filaResultado.isVazia()) {
             Resultado resultadoParaEnvio = pegarResultado();
             try {
-                Resultado resultadoRecebido = (Resultado) ClienteWS.postObjeto(resultadoParaEnvio, Resultado.class, "http://localhost:3000/avaliar");
-                vetorMensagens[indice] = "Sucesso ao avaliar o aluno do RA " + resultadoRecebido.getRA() + ", na disciplina " + resultadoRecebido.getCod();
+                MensagemResultado resultadoRecebido = (MensagemResultado) ClienteWS.postObjeto(resultadoParaEnvio, MensagemResultado.class, "http://localhost:3000/avaliar");
+                if(resultadoRecebido.getMensagem().equals("Sucesso"))
+                    vetorMensagens[indice] = "Sucesso ao avaliar o aluno do RA " + resultadoParaEnvio.getRA() + ", na disciplina " + resultadoParaEnvio.getCod();
+                else
+                    vetorMensagens[indice] = "Erro ao avaliar o aluno do RA "+ resultadoParaEnvio.getRA() + ": " + resultadoRecebido.getMensagem();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                vetorMensagens[indice] = "Erro ao avaliar o aluno do RA "+ resultadoParaEnvio.getRA() + ": " + ex.getMessage();
+                vetorMensagens[indice] = "Erro ao avaliar o aluno do RA "+ resultadoParaEnvio.getRA() + ": " + ex;
             } finally {
                 removerResultado();
                 indice++;
@@ -93,14 +98,14 @@ public class InitialWindow {
         Resultado ret = null;
         try {
             ret = this.filaResultado.recupereUmItem();
-        } catch (Exception ex) {}
+        } catch (Exception ex) { ex.printStackTrace(); }
         return ret;
     }
 
     private void removerResultado() {
         try {
             this.filaResultado.removaUmItem();
-        } catch (Exception ex) {}
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
 
     private void limparFila() {
