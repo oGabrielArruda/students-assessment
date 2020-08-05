@@ -25,21 +25,21 @@ app.post('/avaliar', async (req, res) => {
     const { ra, cod, nota, frequencia } = req.body;
 
     const alunoExistente = await execSQLQuery(`select * from Alunos where ra = ${ra}`);
-    if (alunoExistente.recordset.length === 0) return res.status(400).json({ error: "RA inválido!"});
+    if (alunoExistente.recordset.length === 0)  res.json({ mensagem: "RA inválido!" });
 
     const disciplinaExistente = await execSQLQuery(`select * from Disciplinas where cod = ${cod}`);
-    if (disciplinaExistente.recordset.length === 0) return res.status(400).json({ error: "Código de discplina inválido!"});
+    if (disciplinaExistente.recordset.length === 0) res.json("Código da disciplina inválido!");
 
     const matriculaExistente = await execSQLQuery(`select * from Matriculas where ra = ${ra} and cod = ${cod}`);
-    if (matriculaExistente.recordset.length === 0) return res.status(400).json({ error: "Matrícula inexistente"});
+    if (matriculaExistente.recordset.length === 0) res.json({ mensagem: "Matrícula inexistente" });
 
-    if (req.nota < 0 || req.nota > 10) return res.status(400).json({ error: "Nota inválida!" });
+    if (req.nota < 0 || req.nota > 10) res.json({ mensagem: "Nota inválida!" });
 
-    if (req.freq < 0 || req.freq > 1) return res.status(400).json({ error: "Frequência inválida"});
+    if (req.freq < 0 || req.freq > 1) res.json({ mensagem: "Frequência inválida!" });
     
     await execSQLQuery(`delete from Matriculas where ra = ${ra} and cod = ${cod}`)
     await execSQLQuery(`insert into Resultados values (${ra}, ${cod}, ${nota}, ${frequencia})`);
-    return res.json(req.body);
+    return res.json({ mensagem: "Sucesso"});
 });
 
 app.listen('3000', () => {
